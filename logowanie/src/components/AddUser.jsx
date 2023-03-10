@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import Card from "../UI/Card";
 import classes from './AddUser.module.css'
 import Button from "../UI/Button";
@@ -20,8 +20,8 @@ function AddUser(){
         console.log(age)
     }
 
-    function addUserHandler(event){
-        event.preventDefault()
+    async function addUserHandler(event){
+        event.preventDefault();
         if(+age<1)
         {
             setErrorModal(
@@ -30,6 +30,7 @@ function AddUser(){
                     msg:"Wiek większy od zera"
                 }
             )
+            return null
         }
         if(name=='')
         {
@@ -39,12 +40,50 @@ function AddUser(){
                     msg:"Nazwa nie może być pusta"
                 }
             )
+            return null
         }
+    
+        const my_object={
+            objectName: name,
+            objectAge:age
+        }
+    
+        console.log(my_object);
+    
+        const res = await fetch('https://logg-78864-default-rtdb.firebaseio.com//log.json',
+        {
+            method: 'POST',
+            body: JSON.stringify(my_object),
+            headers:{
+            'Content-Type': 'application.json'
+            }
+    
+        }) ;
+            const data = await res.json() ;
+            setName('')
+            setAge('')
+            }
 
-        setName('')
+    const getDataHandler=useCallback(async()=>{
+        const res = await fetch('https://logg-78864-default-rtdb.firebaseio.com//log.json')
+        
+        const data = await res.json()
+  
+        const loadedData = []
+        for(const key in data){
+          loadedData.push({
+            name: data[key].name,
+            age: data[key].age
+          })
+        }
+        console.log(data)
+        console.log(loadedData);
+       
+    })
 
-        setAge('')
-    }
+    useEffect(()=>{
+        getDataHandler()
+        },[])
 
     return(
         <>
