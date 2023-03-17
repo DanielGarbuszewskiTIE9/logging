@@ -8,6 +8,10 @@ function AddUser(){
 
     const [name, setName] = useState('')
     const [age, setAge] = useState('')
+    const [password, setPassword] = useState('')
+    const [email, setEmail] = useState('')
+    const [loadedData, setLoadedData] = useState([])
+
     const [errorModal, setErrorModal] = useState(null)
 
     function namedChangeHandler(event){
@@ -18,6 +22,16 @@ function AddUser(){
     function agedChangeHandler(event){
         setAge(event.target.value)
         console.log(age)
+    }
+
+    function emailedChangeHandler(event){
+        setEmail(event.target.value)
+        console.log(email)
+    }
+
+    function passwordedChangeHandler(event){
+        setPassword(event.target.value)
+        console.log(password)
     }
 
     async function addUserHandler(event){
@@ -42,10 +56,32 @@ function AddUser(){
             )
             return null
         }
+        if(email=='')
+        {
+            setErrorModal(
+                {
+                    title:'Błędny email',
+                    msg:"email nie może być pusty"
+                }
+            )
+            return null
+        }
+        if(password=='')
+        {
+            setErrorModal(
+                {
+                    title:'Błędne haslo',
+                    msg:"haslo nie może być puste"
+                }
+            )
+            return null
+        }
     
         const my_object={
-            objectName: name,
-            objectAge:age
+            objectName:name,
+            objectAge:age,
+            objectPassword:password,
+            objectEmail:email,
         }
     
         console.log(my_object);
@@ -69,15 +105,20 @@ function AddUser(){
         
         const data = await res.json()
   
-        const loadedData = []
+        const ld = []
         for(const key in data){
-          loadedData.push({
-            name: data[key].name,
-            age: data[key].age
+          ld.push({
+            key: key,
+            name: data[key].objectName,
+            age: data[key].objectAge,
+            password: data[key].objectPassword,
+            email: data[key].objectEmail
           })
         }
-        console.log(data)
+        setLoadedData(ld) ;
+        console.log(data) ;
         console.log(loadedData);
+        
        
     })
 
@@ -99,12 +140,27 @@ function AddUser(){
             <input id="age" onChange={agedChangeHandler}
             value={age}/>
 
+            <label htmlFor="password">Password</label>
+            <input id="password" onChange={passwordedChangeHandler}
+            value={password}/>
+
+            <label htmlFor="Email">Email</label>
+            <input id="email" onChange={emailedChangeHandler}
+            value={email}/>
+
             <Button type="submit">Add user</Button>
         </form>
         </Card>
+        <ul>
+            {
+              loadedData.map( item => <li key={item.key}> {item.name} {item.age} {item.email} {item.password}</li>)
+            }
+        </ul>
         </>
     )
     
 }
 
-export default AddUser
+export default AddUser;
+
+// {loadedData.map((item)=><p>{item}</p>)}
