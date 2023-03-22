@@ -96,9 +96,11 @@ function AddUser(){
     
         }) ;
             const data = await res.json() ;
-            setName('')
-            setAge('')
-            }
+        setName('')
+        setAge('')
+        setPassword('')
+        setEmail('')
+        }
 
     const getDataHandler=useCallback(async()=>{
         const res = await fetch('https://logg-78864-default-rtdb.firebaseio.com//log.json')
@@ -124,7 +126,7 @@ function AddUser(){
 
     useEffect(()=>{
         getDataHandler()
-        },[])
+        },[getDataHandler()])
 
     return(
         <>
@@ -153,7 +155,7 @@ function AddUser(){
         </Card>
         <ul>
             {
-              loadedData.map( item => <li key={item.key}> {item.name} {item.age} {item.email} {item.password}</li>)
+              loadedData.map( item => <li key={item.key}>Username: {item.name} | Age: {item.age} | Email: {item.email} | Password: {item.password}</li>)
             }
         </ul>
         </>
