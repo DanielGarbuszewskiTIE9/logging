@@ -126,9 +126,9 @@ function AddUser(){
 
     useEffect(()=>{
         getDataHandler()
-        },[getDataHandler()])
+        },[getDataHandler])
 
-    return(
+    return(     
         <>
         {errorModal && <ErrorModal title={errorModal.title} msg={errorModal.msg}/>}
         <Card className={classes.input}>
